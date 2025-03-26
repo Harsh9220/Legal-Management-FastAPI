@@ -24,7 +24,6 @@
       </column>
       <column name="mobile" type="VARCHAR(20)"/>
       <column name="address" type="VARCHAR(255)"/>
-      <!-- ENUM for role -->
       <column name="role" type="ENUM('lawyer','staff','admin','client')">
         <constraints nullable="false"/>
       </column>

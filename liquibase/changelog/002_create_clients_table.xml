@@ -37,7 +37,6 @@
     </createTable>
   </changeSet>
 
-  <!-- Add defaults for timestamps -->
   <changeSet id="002_add_default_updated_at_clients" author="harsh">
     <addDefaultValue 
          tableName="clients" 

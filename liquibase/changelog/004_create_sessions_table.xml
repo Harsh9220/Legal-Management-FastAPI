@@ -5,7 +5,6 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog  
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-  <!-- 004-1: Create Sessions Table without inline defaults -->
   <changeSet id="004_create_sessions_table" author="harsh">
     <createTable tableName="sessions">
       <column name="id" type="INT" autoIncrement="true">
@@ -29,7 +28,6 @@
     </createTable>
   </changeSet>
 
-  <!-- 004-2: Add default for session_date -->
   <changeSet id="004_add_default_session_date" author="harsh">
     <addDefaultValue 
          tableName="sessions" 
@@ -37,7 +35,6 @@
          defaultValueComputed="CURRENT_DATE"/>
   </changeSet>
 
-  <!-- 004-3: Add default for created_at -->
   <changeSet id="004_add_default_created_at_sessions" author="harsh">
     <addDefaultValue 
          tableName="sessions" 
