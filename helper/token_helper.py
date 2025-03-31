@@ -43,6 +43,7 @@ class TokenHelper:
                 return APIHelper.send_unauthorized_error(errorMessageKey='translations.UNAUTHORIZED')
         except JWTError:
             return APIHelper.send_unauthorized_error(errorMessageKey='translations.UNAUTHORIZED')
+        
         user = DBHelper.get_user_by_id(user_id)
         if user is None:
             return APIHelper.send_unauthorized_error(

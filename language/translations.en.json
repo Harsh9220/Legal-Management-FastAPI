@@ -1,14 +1,22 @@
 {
   "en": {
-    "SUCCESS": "Success",
-    "FAILURE": "Failure",
-    "UNAUTHORIZED": "You are Unauthorized",
-    "LOGIN_SUCCESS":"You have Logged in Successfully",
-    "INVALID_CREDENTIAL":"Invalid Credentials",
-    "TOKEN_EXPIRED":"Token Expired",
-    "PERMISSION_DENIED":"Permission Denied",
-    "INVALID_EMAIL":"Invalid Email",
-    "INVALID_MOBILE":"Invalid Mobile Number",
-    "INVALID_PASSWORD":"Invalid Password"
+    "SUCCESS": "success",
+    "FAILURE": "failure",
+    "UNAUTHORIZED": "You are unauthorized",
+    "LOGIN_SUCCESS":"You have logged in successfully",
+    "INVALID_CREDENTIAL":"Invalid credentials",
+    "TOKEN_EXPIRED":"Token is expired",
+    "PERMISSION_DENIED":"Permission is denied",
+    "INVALID_EMAIL":"Email is invalid",
+    "INVALID_MOBILE":"Mobile Number is invalid",
+    "INVALID_PASSWORD":"Password is invalid",
+    "LAWYER_NOT_FOUND":"Lawyer is not found",
+    "USERNAME_EXISTS":"Username already exists",
+    "EMAIL_EXISTS":"Email already exists",
+    "LAWYER_CREATED":"Lawyer is created successfully",
+    "LAWYER_UPDATED":"Lawyer is updated successfully",
+    "LAWYER_STATUS_UPDATED":"Lawyer status is updated successfully",
+    "LAWYER_DELETED":"Lawyer is deleted successfully"
+
   }
 }
