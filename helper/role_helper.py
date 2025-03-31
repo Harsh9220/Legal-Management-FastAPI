@@ -6,7 +6,7 @@ import locale
 
 class RoleHelper:
     def require_role(required_roles: List[str],user:UserModel):
-        if user.get("role") not in required_roles:
+        if user.role not in required_roles:
             raise HTTPException(
                 status_code=403,
                 detail=i18n.t(key="translations.PERMISSION_DENIED",locale=locale)

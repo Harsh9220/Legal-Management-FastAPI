@@ -12,7 +12,7 @@ class AuthController:
         user = Hash.authenticate_user(
             username=request.username, password=request.password)
         access_token = TokenHelper.create_access_token(
-            data={"id": user.id,"username":user.username,"role":user.role}
+            data={"id": user.id,"role":user.role,"sub":user.username}
         )
         response = TokenModel(access_token=access_token)
         return response

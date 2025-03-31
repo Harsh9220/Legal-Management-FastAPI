@@ -1,11 +1,14 @@
 {
   "en": {
-    "SUCCESS": "success",
-    "FAILURE": "failure",
-    "UNAUTHORIZED": "You are unauthorized",
-    "LOGIN_SUCCESS":"You have logged in successfully",
-    "INVALID_CREDENTIAL":"Invalid credentials",
-    "TOKEN_EXPIRED":"Token expired",
-    "PERMISSION_DENIED":"Permission Denied"
+    "SUCCESS": "Success",
+    "FAILURE": "Failure",
+    "UNAUTHORIZED": "You are Unauthorized",
+    "LOGIN_SUCCESS":"You have Logged in Successfully",
+    "INVALID_CREDENTIAL":"Invalid Credentials",
+    "TOKEN_EXPIRED":"Token Expired",
+    "PERMISSION_DENIED":"Permission Denied",
+    "INVALID_EMAIL":"Invalid Email",
+    "INVALID_MOBILE":"Invalid Mobile Number",
+    "INVALID_PASSWORD":"Invalid Password"
   }
 }

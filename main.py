@@ -15,6 +15,7 @@ load_dotenv(dotenv_path)
 # Importing libraries
 from fastapi import FastAPI, Request
 from routes.auth import auth
+from routes.admin import admin
 from fastapi.exceptions import RequestValidationError
 import i18n
 
@@ -62,4 +63,4 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
 # Including the routes
 app.include_router(auth)
-
+app.include_router(admin)

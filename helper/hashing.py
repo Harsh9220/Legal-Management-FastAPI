@@ -17,18 +17,18 @@ class Hash:
         user = DBHelper.get_user_by_username(username)
         if not user:
             return APIHelper.send_unauthorized_error(
-                errorMessagekey="translations.INVALID_CREDENTIAL"
+                errorMessageKey="translations.INVALID_CREDENTIAL"
             )
         if not Hash.verify(password, user.hashed_password):
             return APIHelper.send_unauthorized_error(
-                errorMessagekey="translations.UNAUTHORIZED"
+                errorMessageKey="translations.UNAUTHORIZED"
             )
         if user.is_blocked :
             return APIHelper.send_unauthorized_error(
-                errorMessagekey="translations.UNAUTHORIZED"
+                errorMessageKey="translations.UNAUTHORIZED"
             )
         if user.is_deleted :
             return APIHelper.send_unauthorized_error(
-                errorMessagekey="translations.UNAUTHORIZED"
+                errorMessageKey="translations.UNAUTHORIZED"
             )
         return user

@@ -11,7 +11,7 @@ class APIHelper:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=(BaseErrorModel(error=i18n.t(
-                key=errorMessageKey or 'translations.FAILURE', locale=locale)))
+                key=errorMessageKey or 'translations.FAILURE', locale=locale))).model_dump()
         )
 
     # Send unauthorized response with custom message
@@ -19,7 +19,7 @@ class APIHelper:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=(BaseErrorModel(error=i18n.t(
-                key=errorMessageKey or 'translations.FAILURE', locale=locale)))
+                key=errorMessageKey or 'translations.FAILURE', locale=locale))).model_dump()
         )
 
     # Send error response with custom message
