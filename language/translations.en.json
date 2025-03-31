@@ -1,0 +1,11 @@
+{
+  "en": {
+    "SUCCESS": "success",
+    "FAILURE": "failure",
+    "UNAUTHORIZED": "You are unauthorized",
+    "LOGIN_SUCCESS":"You have logged in successfully",
+    "INVALID_CREDENTIAL":"Invalid credentials",
+    "TOKEN_EXPIRED":"Token expired",
+    "PERMISSION_DENIED":"Permission Denied"
+  }
+}
