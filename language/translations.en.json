@@ -52,6 +52,10 @@
     "INVOICE_NUM_EXISTS":"Invoice number is already exists",
     "INVOICE_CREATED":"Invoice is created is successfully",
     "INVOICE_UPDATED":"Invoice is updated is successfully",
-    "INVOICE_DELETED":"Invocie is deleted is successfully"
+    "INVOICE_DELETED":"Invocie is deleted is successfully",
+    "TASK_NOT_FOUND":"Task is not found",
+    "TASK_CREATED":"Task is created successfully",
+    "TASK_UPDATED":"Task is updated successfully",
+    "TASK_DELETED":"Task is deleted successfully"
   }
 }

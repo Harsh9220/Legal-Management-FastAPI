@@ -22,6 +22,7 @@ from routes.client import client
 from routes.case import case
 from routes.document import document
 from routes.invoice import invoice
+from routes.task import task
 from fastapi.exceptions import RequestValidationError
 import i18n
 
@@ -76,3 +77,4 @@ app.include_router(client)
 app.include_router(case)
 app.include_router(document)
 app.include_router(invoice)
+app.include_router(task)
