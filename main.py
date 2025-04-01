@@ -18,6 +18,7 @@ from routes.auth import auth
 from routes.admin import admin
 from routes.lawyer import lawyer
 from routes.staff import staff
+from routes.client import client
 from fastapi.exceptions import RequestValidationError
 import i18n
 
@@ -68,3 +69,4 @@ app.include_router(auth)
 app.include_router(admin)
 app.include_router(lawyer)
 app.include_router(staff)
+app.include_router(client)

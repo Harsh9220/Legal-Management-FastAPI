@@ -25,7 +25,16 @@
     "STAFF_SOFT_DELETED":"Staff has been deleted temporary",
     "STAFF_ALREADY_DELETED":"Staff is already deleted",
     "STAFF_NOT_DELETED":"Staff is not deleted or already restored",
-    "STAFF_RESTORED":"Staff has been restored"
+    "STAFF_RESTORED":"Staff has been restored",
+    "CLIENT_NOT_FOUND":"Client is not found",
+    "CLIENT_CREATED":"Client is created successfully",
+    "CLIENT_UPDATED":"Client is updated successfully",
+    "CLIENT_DELETED":"Client is deleted successfully",
+    "CLIENT_STATUS_UPDATED":"Client status is updated successfully",
+    "CLIENT_ALREADY_DELETED":"Client is already deleted",
+    "CLIENT_SOFT_DELETED":"Client has been deleted temporary",
+    "CLIENT_NOT_DELETED":"Client is not deleted or already restored",
+    "CLIENT_RESTORED":"Client has been restored"
 
   }
 }
