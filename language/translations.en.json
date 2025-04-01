@@ -56,6 +56,9 @@
     "TASK_NOT_FOUND":"Task is not found",
     "TASK_CREATED":"Task is created successfully",
     "TASK_UPDATED":"Task is updated successfully",
-    "TASK_DELETED":"Task is deleted successfully"
+    "TASK_DELETED":"Task is deleted successfully",
+    "SESSION_NOT_FOUND":"Session is not found",
+    "SESSION_CREATED":"Session is created successfully",
+    "SESSION_DELETED":"Session is deleted successfully"
   }
 }
