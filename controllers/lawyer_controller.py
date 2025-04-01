@@ -129,7 +129,7 @@ class LawyerController:
                 successMessageKey="translations.LAWYER_UPDATED"
             )
 
-    def block_unblock_lawyer(lawyer_id: int, user: UserModel):
+    def block_unblock_lawyer(lawyer_id: int, user: UserModel)->BaseResponseModel:
         RoleHelper.require_role(["admin"], user)
         with SessionLocal() as db:
             lawyer = (
@@ -153,7 +153,7 @@ class LawyerController:
                 successMessageKey="translations.LAWYER_STATUS_UPDATED",
             )
 
-    def delete_lawyer(lawyer_id: int, user: UserModel):
+    def delete_lawyer(lawyer_id: int, user: UserModel)->BaseResponseModel:
         RoleHelper.require_role(["admin"], user)
         with SessionLocal() as db:
             lawyer = (

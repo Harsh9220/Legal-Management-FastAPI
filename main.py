@@ -17,6 +17,7 @@ from fastapi import FastAPI, Request
 from routes.auth import auth
 from routes.admin import admin
 from routes.lawyer import lawyer
+from routes.staff import staff
 from fastapi.exceptions import RequestValidationError
 import i18n
 
@@ -66,3 +67,4 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 app.include_router(auth)
 app.include_router(admin)
 app.include_router(lawyer)
+app.include_router(staff)

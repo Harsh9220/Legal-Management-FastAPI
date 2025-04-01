@@ -16,7 +16,16 @@
     "LAWYER_CREATED":"Lawyer is created successfully",
     "LAWYER_UPDATED":"Lawyer is updated successfully",
     "LAWYER_STATUS_UPDATED":"Lawyer status is updated successfully",
-    "LAWYER_DELETED":"Lawyer is deleted successfully"
+    "LAWYER_DELETED":"Lawyer is deleted successfully",
+    "STAFF_NOT_FOUND":"Staff is not found",
+    "STAFF_CREATED":"Staff is created successfully",
+    "STAFF_UPDATED":"Staff is updated successfully",
+    "STAFF_DELETED":"Staff is deleted successfully",
+    "STAFF_STATUS_UPDATED":"Staff status is updated successfully",
+    "STAFF_SOFT_DELETED":"Staff has been deleted temporary",
+    "STAFF_ALREADY_DELETED":"Staff is already deleted",
+    "STAFF_NOT_DELETED":"Staff is not deleted or already restored",
+    "STAFF_RESTORED":"Staff has been restored"
 
   }
 }
