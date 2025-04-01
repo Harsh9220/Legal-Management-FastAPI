@@ -43,6 +43,10 @@
     "CASE_SOFT_DELETED":"Case has been deleted temporary",
     "CASE_NOT_DELETED":"Case is not deleted or already restored",
     "CASE_RESTORED":"Case has been restored",
-    "CASE_DELETED":"Case is deleted successfully"
+    "CASE_DELETED":"Case is deleted successfully",
+    "DOCUMENT_NOT_FOUND":"Document is not found",
+    "DOCUMENT_CREATED":"Document is created successfully",
+    "DOCUMENT_UPDATED":"Document is updated successfully",
+    "DOCUMENT_DELETED":"Document is deleted successfully"
   }
 }
