@@ -47,6 +47,11 @@
     "DOCUMENT_NOT_FOUND":"Document is not found",
     "DOCUMENT_CREATED":"Document is created successfully",
     "DOCUMENT_UPDATED":"Document is updated successfully",
-    "DOCUMENT_DELETED":"Document is deleted successfully"
+    "DOCUMENT_DELETED":"Document is deleted successfully",
+    "INVOICE_NOT_FOUND":"Invoice is not found",
+    "INVOICE_NUM_EXISTS":"Invoice number is already exists",
+    "INVOICE_CREATED":"Invoice is created is successfully",
+    "INVOICE_UPDATED":"Invoice is updated is successfully",
+    "INVOICE_DELETED":"Invocie is deleted is successfully"
   }
 }
