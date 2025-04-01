@@ -34,7 +34,15 @@
     "CLIENT_ALREADY_DELETED":"Client is already deleted",
     "CLIENT_SOFT_DELETED":"Client has been deleted temporary",
     "CLIENT_NOT_DELETED":"Client is not deleted or already restored",
-    "CLIENT_RESTORED":"Client has been restored"
-
+    "CLIENT_RESTORED":"Client has been restored",
+    "CASE_NOT_FOUND":"Case is not found",
+    "CASE_NUM_EXISTS":"Case number is already exists",
+    "CASE_CREATED":"Case is created successfully",
+    "CASE_UPDATED":"Case is updated successfully",
+    "CASE_ALREADY_DELETED":"Case is already deleted",
+    "CASE_SOFT_DELETED":"Case has been deleted temporary",
+    "CASE_NOT_DELETED":"Case is not deleted or already restored",
+    "CASE_RESTORED":"Case has been restored",
+    "CASE_DELETED":"Case is deleted successfully"
   }
 }
