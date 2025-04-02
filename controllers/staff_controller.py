@@ -136,7 +136,7 @@ class StaffController:
                 successMessageKey="translations.STAFF_DELETED"
             )
     
-    def block_unblock_staff(staff_id:int,user:UserModel):
+    def block_unblock_staff(staff_id:int,user:UserModel)->BaseResponseModel:
         RoleHelper.require_role(["lawyer","admin"],user)
         with SessionLocal() as db:
             staff = (
@@ -160,7 +160,7 @@ class StaffController:
                 successMessageKey="translations.STAFF_STATUS_UPDATED",
             )
     
-    def soft_delete_staff(staff_id:int,user:UserModel):
+    def soft_delete_staff(staff_id:int,user:UserModel)->BaseResponseModel:
         RoleHelper.require_role(["lawyer","admin"],user)
         with SessionLocal() as db:
             staff = db.query(User).filter(User.id == staff_id, User.role == "staff").first()
@@ -185,7 +185,7 @@ class StaffController:
                 successMessageKey="translations.STAFF_SOFT_DELETED",
             )
             
-    def restore_staff(staff_id:int,user:UserModel):
+    def restore_staff(staff_id:int,user:UserModel)->BaseResponseModel:
         RoleHelper.require_role(["lawyer","admin"],user)
         with SessionLocal() as db:
             staff = db.query(User).filter(User.id == staff_id, User.role == "staff").first()

@@ -84,7 +84,7 @@ class DocumentController:
 
     def update_document(
         document_id: int, update_data: UpdateDocumentRequest, user: UserModel
-    ):
+    )->BaseResponseModel:
         RoleHelper.require_role(["lawyer", "staff", "admin"], user)
         with SessionLocal() as db:
             document = db.query(Document).filter(Document.id == document_id).first()
@@ -105,7 +105,7 @@ class DocumentController:
                 successMessageKey="translations.DOCUMENT_UPDATED",
             )
 
-    def delete_document(document_id: int, user: UserModel):
+    def delete_document(document_id: int, user: UserModel)->BaseResponseModel:
         RoleHelper.require_role(["lawyer", "staff", "admin"], user)
         with SessionLocal() as db:
             document = db.query(Document).filter(Document.id == document_id).first()

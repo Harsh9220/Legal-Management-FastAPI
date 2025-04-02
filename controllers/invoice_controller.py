@@ -105,7 +105,7 @@ class InvoiceController:
                 successMessageKey="translations.INVOICE_UPDATED",
             )
     
-    def delete_invoice(invoice_id:int,user:UserModel):
+    def delete_invoice(invoice_id:int,user:UserModel)->BaseResponseModel:
         RoleHelper.require_role(["lawyer","admin"],user)
         with SessionLocal() as db:
             invoice = db.query(Invoice).filter(Invoice.id==invoice_id).first()
