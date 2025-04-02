@@ -67,6 +67,18 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
             errorMessageKey =f"{exc.errors()[0]['loc'][1]} {exc.errors()[0]['msg']}")
         
 
+@app.get("/")
+async def root():
+    return {
+        "message": "Welcome to Legal Management API",
+        "version": "0.0.1",
+        "documentation": {
+            "swagger": "/docs",
+            "redoc": "/redoc"
+        },
+        "status": "active"
+    }
+
 
 
 # Including the routes
