@@ -1,6 +1,4 @@
-# Legal Management FastAPI
-
-A role-based legal management system built with FastAPI.
+# Legal Management FastAPI Project Setup Guide
 
 ## Prerequisites
 - Python (>=3.8)
@@ -19,14 +17,15 @@ cd Legal-Management-FastAPI
 ```
 
 ### 2. Create a Virtual Environment
+It is recommended to use a virtual environment to manage dependencies.
 
-#### For Windows (PowerShell)
+**For Windows (PowerShell)**
 ```bash
 python -m venv venv
 venv\Scripts\activate
 ```
 
-#### For macOS/Linux
+**For macOS/Linux**
 ```bash
 python -m venv venv
 source venv/bin/activate
@@ -43,27 +42,41 @@ CREATE DATABASE legal_management;
 ```
 
 ### 5. Environment Setup
-Create a `.env` file in the root directory with the following content:
-
-```
-DB_URL=mysql+pymysql://username:password@localhost:3306/legal_management
-JWT_SECRET=your_jwt_secret_key  # Generate using: openssl rand -hex 32
-LOG_LEVEL=info
-```
-
-### 6. Run Liquibase Migrations
+Copy the example environment file and update it with your values:
 ```bash
-cd liquibase
-liquibase update
+cp .env.example .env
 ```
 
-#### Note: Before running the Liquibase update, create the `liquibase.properties` file in the `liquibase` directory with the following content:
+Update the `.env` file with your specific configuration:
+```env
+DATABASE_USER=your_database_username
+DATABASE_PASSWORD=your_database_password
+DATABASE_URL=localhost
+DATABASE_PORT=3306
+DATABASE_NAME=legal_management
+JWT_SECRET=your_jwt_secret_key  # Generate using: openssl rand -hex 32
+CORS_DOMAIN=your_frontend_domain
 ```
+
+### 6. Liquibase Setup
+Copy the example properties file and update it with your database credentials:
+```bash
+cp liquibase/liquibase.properties.example liquibase/liquibase.properties
+```
+
+Update `liquibase.properties` with your database credentials:
+```properties
 driver=com.mysql.cj.jdbc.Driver
 url=jdbc:mysql://localhost:3306/legal_management
 username=your_username
 password=your_password
 changeLogFile=changelog/db.changelog-master.xml
+```
+
+Then run the migrations:
+```bash
+cd liquibase
+liquibase update
 ```
 
 ## Running the FastAPI Application
@@ -80,57 +93,94 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
 ## API Documentation
 Once the application is running, you can access:
-- **Swagger UI**: [http://localhost:8000/docs](http://localhost:8000/docs)
-- **ReDoc**: [http://localhost:8000/redoc](http://localhost:8000/redoc)
+- Swagger UI: http://localhost:8000/docs
+- ReDoc: http://localhost:8000/redoc
 
 ## Project Structure
 ```
 Legal-Management-FastAPI/
-├── config/             # Database and configuration files
-├── controllers/        # Business logic
+├── config/             # Database configuration
+├── controllers/        # Business logic for each module
+│   ├── auth_controller.py
+│   ├── case_controller.py
+│   ├── client_controller.py
+│   ├── document_controller.py
+│   ├── invoice_controller.py
+│   ├── lawyer_controller.py
+│   ├── session_controller.py
+│   ├── staff_controller.py
+│   └── task_controller.py
 ├── dtos/              # Data transfer objects
-├── helper/            # Helper functions and utilities
+├── helper/            # Helper functions
+│   ├── api_helper.py
+│   ├── cors_helper.py
+│   ├── date_helper.py
+│   ├── hashing.py
+│   ├── logger_helper.py
+│   ├── role_helper.py
+│   ├── token_helper.py
+│   └── validation_helper.py
 ├── language/          # Internationalization files
-├── liquibase/         # Database migration files
-├── models/            # Database models
-├── routes/            # API routes
-├── utils/             # Utility functions
-├── .env               # Environment variables
-├── main.py           # Application entry point
-└── requirements.txt   # Project dependencies
+├── liquibase/         # Database migrations
+│   ├── changelog/
+│   └── liquibase.properties.example
+├── models/           # Database models
+├── routes/           # API endpoints
+├── utils/            # Utility functions
+├── .env.example      # Example environment variables
+├── .gitignore       # Git ignore rules
+├── main.py          # Application entry point
+└── requirements.txt  # Project dependencies
 ```
+
+## Features
+- 👥 User Management (Admin, Lawyer, Staff)
+- 📁 Case Management
+- 👤 Client Management
+- 📄 Document Management
+- 📋 Task Management
+- 💰 Invoice Management
+- 📅 Session Management
+- 🔐 Role-based Access Control
+- 🌐 Internationalization Support
+- 🔒 JWT Authentication
+- 📝 Database Migrations with Liquibase
+
+## Security Features
+- JWT Authentication
+- Password Hashing with bcrypt
+- Role-based Access Control
+- Environment Variable Protection
+- Database Credentials Security
 
 ## Additional Notes
-- Ensure all required environment variables are set before running the application.
-- The system uses role-based access with **Admin, Lawyer, and Staff** roles.
-- All API endpoints require **JWT authentication** except for login and registration.
-- The system supports **internationalization** for error messages.
+- The `.env` and `liquibase.properties` files are not tracked in git for security
+- Use the provided `.env.example` and `liquibase.properties.example` as templates
+- All API endpoints except login/register require JWT authentication
+- The system supports multiple languages through i18n
+- Database migrations are handled through Liquibase
 
 ## Troubleshooting
+
 If you encounter any issues, try:
-
 1. Checking Python and pip versions:
-```bash
-python --version
-pip --version
-```
-
+   ```bash
+   python --version
+   pip --version
+   ```
 2. Ensuring dependencies are installed correctly:
-```bash
-pip list
-```
-
-3. Verifying database connection and credentials in `.env` file.
-4. Checking if Liquibase migrations were successful.
-5. Ensuring the virtual environment is activated before running commands.
-6. Verifying `JWT_SECRET` is properly set in `.env`.
+   ```bash
+   pip list
+   ```
+3. Verifying database connection:
+   ```bash
+   mysql -u your_username -p -h localhost
+   ```
+4. Checking environment variables are set correctly in `.env`
+5. Ensuring Liquibase migrations are up to date
+6. Verifying the virtual environment is activated
 
 To exit the virtual environment when done, use:
 ```bash
 deactivate
 ```
-
-## License
-This project is licensed under the MIT License.
-
----
