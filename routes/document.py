@@ -11,8 +11,8 @@ document=APIRouter(tags=["document"])
 user_dependency = Annotated[UserModel, Depends(TokenHelper.get_current_user)]
 
 @document.get("/documents",status_code=status.HTTP_200_OK)
-async def get_all_documents(current_user:user_dependency):
-    return DocumentController.get_all_documents(current_user)
+async def get_all_documents(case_id:int,current_user:user_dependency):
+    return DocumentController.get_all_documents(case_id,current_user)
 
 @document.get("/documents/{document_id}",status_code=status.HTTP_200_OK)
 async def get_document(document_id:int,current_user:user_dependency):
@@ -22,7 +22,7 @@ async def get_document(document_id:int,current_user:user_dependency):
 async def create_document(document_data:CreateDocumentRequest,current_user:user_dependency):
     return DocumentController.create_document(document_data,current_user)
 
-@document.put("/document/{document_id}",status_code=status.HTTP_200_OK)
+@document.post("/document/{document_id}",status_code=status.HTTP_200_OK)
 async def update_document(document_id:int,update_data:UpdateDocumentRequest, current_user:user_dependency):
     return DocumentController.update_document(document_id,update_data,current_user)
 

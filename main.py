@@ -16,9 +16,7 @@ load_dotenv(dotenv_path)
 from fastapi import FastAPI, Request
 from routes.auth import auth
 from routes.admin import admin
-from routes.lawyer import lawyer
-from routes.staff import staff
-from routes.client import client
+from routes.user import user
 from routes.case import case
 from routes.document import document
 from routes.invoice import invoice
@@ -84,9 +82,7 @@ async def root():
 # Including the routes
 app.include_router(auth)
 app.include_router(admin)
-app.include_router(lawyer)
-app.include_router(staff)
-app.include_router(client)
+app.include_router(user)
 app.include_router(case)
 app.include_router(document)
 app.include_router(invoice)

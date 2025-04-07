@@ -23,9 +23,11 @@ class User(Base):
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
     
-    cases=relationship("Case",backref="lawyer",cascade="save-update,delete",foreign_keys="[Case.lawyer_id]")
+    lawyer_cases=relationship("Case",backref="lawyer",cascade="save-update,delete",foreign_keys="[Case.lawyer_id]")
+    client_cases=relationship("Case",backref="client",cascade="save-update,delete",foreign_keys="[Case.client_id]")
     assign_tasks=relationship("Task", backref="assign_staff", cascade="save-update,delete", foreign_keys="[Task.assign_to_staff]")
     created_task=relationship("Task", backref="creator", cascade="save-update,delete", foreign_keys="[Task.created_by]")
+    client_invoice=relationship("Invoice", backref="client", cascade="save-update,delete", foreign_keys="[Invoice.client_id]")
     invoices=relationship("Invoice", backref="creator", cascade="save-update,delete", foreign_keys="[Invoice.created_by]")
     documents=relationship("Document",backref="uploader",cascade="save-update,delete", foreign_keys="[Document.uploader_id]")
     assigned_cases = relationship("Case", secondary="case_staff", back_populates="staff_members")

@@ -20,7 +20,7 @@ class Case(Base):
     case_status = Column(Enum("open", "closed", name="case_status"), nullable=False, default="open")
     issue_date = Column(Date, server_default=func.current_date())
     city_name = Column(String(255))
-    client_id = Column(Integer, ForeignKey("clients.id"), nullable=False)
+    client_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     lawyer_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     remarks = Column(String)
     is_deleted = Column(Boolean, nullable=False, server_default="false")

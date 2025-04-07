@@ -12,10 +12,10 @@ import i18n
 
 class SessionController:
     
-    def get_all_session(user:UserModel)->BaseResponseModel:
+    def get_all_session(case_id:int,user:UserModel)->BaseResponseModel:
         RoleHelper.require_role(["lawyer","admin"],user)
         with SessionLocal() as db:
-            sessions = db.query(CourtSession).all()
+            sessions = db.query(CourtSession).filter(CourtSession.case_id==case_id).all()
             
             if not sessions:
                 raise HTTPException(

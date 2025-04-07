@@ -22,7 +22,7 @@ async def get_invoice(invoice_id:int,current_user:user_dependency):
 async def create_invoice(invoice_data:CreateInvoiceRequest,current_user:user_dependency):
     return InvoiceController.create_invoice(invoice_data,current_user)
 
-@invoice.put("/invoice/{invoice_id}",status_code=status.HTTP_200_OK)
+@invoice.post("/invoice/{invoice_id}",status_code=status.HTTP_200_OK)
 async def update_invoice(invoice_id:int,update_data:UpdateInvoiceRequest,current_user:user_dependency):
     return InvoiceController.update_invoice(invoice_id,update_data,current_user)
 

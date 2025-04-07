@@ -22,7 +22,7 @@ async def get_case(case_id:int,current_user:user_dependency):
 async def create_case(case_data:CreateCaseRequest,current_user:user_dependency):
     return CaseController.create_case(case_data,current_user)
 
-@case.put("/case/{case_id}",status_code=status.HTTP_200_OK)
+@case.post("/case/{case_id}",status_code=status.HTTP_200_OK)
 async def update_case(case_id:int,update_data: UpdateCaseRequest, current_user:user_dependency):
     return CaseController.update_case(case_id,update_data,current_user)
 
@@ -30,10 +30,10 @@ async def update_case(case_id:int,update_data: UpdateCaseRequest, current_user:u
 async def delete_case(case_id:int,current_user:user_dependency):
     return CaseController.delete_case(case_id,current_user)
 
-@case.put("/case/{case_id}/soft-delete",status_code=status.HTTP_200_OK)
+@case.post("/case/{case_id}/soft-delete",status_code=status.HTTP_200_OK)
 async def soft_delete_case(case_id:int,current_user:user_dependency):
     return CaseController.soft_delete_case(case_id,current_user)
 
-@case.put("/case/{case_id}/restore",status_code=status.HTTP_200_OK)
+@case.post("/case/{case_id}/restore",status_code=status.HTTP_200_OK)
 async def restore_case(case_id:int,current_user:user_dependency):
     return CaseController.restore_case(case_id,current_user)

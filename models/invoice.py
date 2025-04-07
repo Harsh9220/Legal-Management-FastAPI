@@ -7,7 +7,7 @@ class Invoice(Base):
     
     id= Column(Integer, primary_key=True, index=True)
     invoice_number= Column(Integer,nullable=False,unique=True)
-    client_id=Column(Integer,ForeignKey("clients.id"),nullable=False)
+    client_id=Column(Integer,ForeignKey("users.id"),nullable=False)
     amount=Column(Integer,nullable=False)
     due_on_date=Column(Date,server_default=func.current_date())
     created_by=Column(Integer,ForeignKey("users.id"),nullable=False)

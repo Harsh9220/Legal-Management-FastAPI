@@ -12,5 +12,6 @@
     <include file="005_create_invoices_table.xml" relativeToChangelogFile="true"/>
     <include file="006_create_documents_table.xml" relativeToChangelogFile="true"/>
     <include file="007_create_tasks_table.xml" relativeToChangelogFile="true"/>
+    <include file="008_merge_clients_to_users.xml" relativeToChangelogFile="true"/>
     
 </databaseChangeLog>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="008_merge_clients_to_users" author="harsh">
+        <dropForeignKeyConstraint 
+            baseTableName="cases" 
+            constraintName="fk_cases_clients"/>
+
+        <dropForeignKeyConstraint 
+            baseTableName="invoices" 
+            constraintName="fk_invoices_clients"/>
+
+        <addForeignKeyConstraint 
+            baseTableName="cases"
+            baseColumnNames="client_id"
+            constraintName="fk_cases_client_users"
+            referencedTableName="users"
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint 
+            baseTableName="invoices"
+            baseColumnNames="client_id"
+            constraintName="fk_invoices_client_users"
+            referencedTableName="users"
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+
+        <dropTable tableName="clients"/>
+    </changeSet>
+
+</databaseChangeLog>

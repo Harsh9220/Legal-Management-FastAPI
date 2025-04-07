@@ -11,8 +11,8 @@ session=APIRouter(tags=["session"])
 user_dependency = Annotated[UserModel, Depends(TokenHelper.get_current_user)]
 
 @session.get("/sessions",status_code=status.HTTP_200_OK)
-async def get_all_session(current_user:user_dependency):
-    return SessionController.get_all_session(current_user)
+async def get_all_session(case_id:int,current_user:user_dependency):
+    return SessionController.get_all_session(case_id,current_user)
 
 @session.get("/sessions/{session_id}",status_code=status.HTTP_200_OK)
 async def get_session(session_id:int,current_user:user_dependency):

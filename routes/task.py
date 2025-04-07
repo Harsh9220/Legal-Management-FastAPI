@@ -26,7 +26,7 @@ async def get_task(task_id:int,current_user:user_dependency):
 async def create_task(task_data:CreateTaskRequest,current_user:user_dependency):
     return TaskController.create_task(task_data,current_user)
 
-@task.put("/task/{task_id}",status_code=status.HTTP_200_OK)
+@task.post("/task/{task_id}",status_code=status.HTTP_200_OK)
 async def update_task(task_id:int,update_data:UpdateTaskRequest,current_user:user_dependency):
     return TaskController.update_task(task_id,update_data,current_user)
 

@@ -4,7 +4,7 @@ from dtos.case_models import CaseResponse, CreateCaseRequest, UpdateCaseRequest
 from helper.role_helper import RoleHelper
 from helper.api_helper import APIHelper
 from models.case import Case
-from models.client import Client
+from models.user import User
 from models.user import User
 from config.db_config import SessionLocal
 from fastapi import HTTPException
@@ -14,7 +14,7 @@ import i18n
 class CaseController:
 
     def get_all_cases(user: UserModel) -> BaseResponseModel:
-        RoleHelper.require_role(["lawyer", "staff", "admin"], user)
+        RoleHelper.require_role(["lawyer", "staff", "admin", "client"], user)
         with SessionLocal() as db:
             if user.role == "staff":
                 cases = (
@@ -23,6 +23,12 @@ class CaseController:
                     .filter(Case.is_deleted == False, User.id == user.id)
                     .all()
                 )
+            elif user.role == "lawyer":
+                cases = db.query(Case).filter(Case.is_deleted == False, Case.lawyer_id == user.id).all()
+            
+            elif user.role == "client":
+                cases = db.query(Case).filter(Case.is_deleted == False, Case.client_id == user.id).all()
+                
             else:
                 cases = db.query(Case).filter(Case.is_deleted == False).all()
 
@@ -37,7 +43,7 @@ class CaseController:
             )
 
     def get_case_by_id(case_id: int, user: UserModel) -> BaseResponseModel:
-        RoleHelper.require_role(["lawyer", "staff", "admin"], user)
+        RoleHelper.require_role(["lawyer", "staff", "admin", "client"], user)
         with SessionLocal() as db:
             if user.role == "staff":
                 case = (
@@ -48,6 +54,20 @@ class CaseController:
                     )
                     .first()
                 )
+            elif user.role == "lawyer":
+                case = (
+                    db.query(Case)
+                    .filter(Case.id == case_id, Case.is_deleted == False, Case.lawyer_id == user.id)
+                    .first()
+                )
+            
+            elif user.role == "client":
+                case = (
+                    db.query(Case)
+                    .filter(Case.id == case_id, Case.is_deleted == False, Case.client_id == user.id)
+                    .first()
+                )
+            
             else:
                 case = (
                     db.query(Case)
@@ -76,8 +96,8 @@ class CaseController:
                 )
 
             client = (
-                db.query(Client)
-                .filter(Client.id == case_data.client_id, Client.is_deleted == False)
+                db.query(User)
+                .filter(User.id == case_data.client_id, User.is_deleted == False, User.role=="client")
                 .first()
             )
             if not client:
@@ -134,10 +154,15 @@ class CaseController:
                 .filter(Case.id == case_id, Case.is_deleted == False)
                 .first()
             )
-
+            
             if not case:
                 raise HTTPException(
                     status_code=404, detail=i18n.t("translations.CASE_NOT_FOUND")
+                )
+            
+            if case.lawyer_id != user.id :
+                raise HTTPException(
+                    status_code=403, detail=i18n.t("translations.UNAUTHORIZED")
                 )
 
             if update_data.case_name is not None:
@@ -154,10 +179,8 @@ class CaseController:
                 case.remarks = update_data.remarks
             if update_data.client_id is not None:
                 new_client = (
-                    db.query(Client)
-                    .filter(
-                        Client.id == update_data.client_id, Client.is_deleted == False
-                    )
+                    db.query(User)
+                    .filter(User.id == update_data.client_id, User.is_deleted == False, User.role=="client")
                     .first()
                 )
 
@@ -199,11 +222,17 @@ class CaseController:
         RoleHelper.require_role(["lawyer", "admin"], user)
         with SessionLocal() as db:
             case = db.query(Case).filter(Case.id == case_id).first()
-
+              
             if not case:
                 raise HTTPException(
                     status_code=404, detail=i18n.t("translations.CASE_NOT_FOUND")
                 )
+            
+            if case.lawyer_id != user.id:
+                raise HTTPException(
+                    status_code=403, detail=i18n.t("translations.UNAUTHORIZED")
+                )
+              
 
             db.delete(case)
             db.commit()
@@ -220,6 +249,11 @@ class CaseController:
             if not case:
                 raise HTTPException(
                     status_code=404, detail=i18n.t("translations.CASE_NOT_FOUND")
+                )
+            
+            if case.lawyer_id != user.id:
+                raise HTTPException(
+                    status_code=403, detail=i18n.t("translations.UNAUTHORIZED")
                 )
 
             if case.is_deleted:
@@ -241,12 +275,17 @@ class CaseController:
     def restore_case(case_id: int, user: UserModel) -> BaseResponseModel:
         RoleHelper.require_role(["lawyer", "admin"], user)
         with SessionLocal() as db:
-            case = db.query(Case).filter(Case.id == case_id).first()
-
+            case = db.query(Case).filter(Case.id == case_id).first()   
+                
             if not case:
                 raise HTTPException(
                     status_code=404, detail=i18n.t("translations.CASE_NOT_FOUND")
                 )
+            if case.lawyer_id != user.id:
+                raise HTTPException(
+                    status_code=403, detail=i18n.t("translations.UNAUTHORIZED")
+                )   
+            
 
             if not case.is_deleted:
                 raise HTTPException(
