@@ -23,11 +23,11 @@ class Hash:
             return APIHelper.send_unauthorized_error(
                 errorMessageKey="translations.UNAUTHORIZED"
             )
-        if user.is_blocked :
+        if user.is_blocked:
             return APIHelper.send_unauthorized_error(
                 errorMessageKey="translations.UNAUTHORIZED"
             )
-        if user.is_deleted :
+        if user.is_deleted:
             return APIHelper.send_unauthorized_error(
                 errorMessageKey="translations.UNAUTHORIZED"
             )

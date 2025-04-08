@@ -16,7 +16,7 @@ import i18n
 
 class DocumentController:
 
-    def get_all_documents(case_id:int,user: UserModel) -> BaseResponseModel:
+    def get_all_documents(case_id: int, user: UserModel) -> BaseResponseModel:
         RoleHelper.require_role(["lawyer", "staff", "admin"], user)
         with SessionLocal() as db:
 
@@ -84,7 +84,7 @@ class DocumentController:
 
     def update_document(
         document_id: int, update_data: UpdateDocumentRequest, user: UserModel
-    )->BaseResponseModel:
+    ) -> BaseResponseModel:
         RoleHelper.require_role(["lawyer", "staff", "admin"], user)
         with SessionLocal() as db:
             document = db.query(Document).filter(Document.id == document_id).first()
@@ -93,7 +93,7 @@ class DocumentController:
                 raise HTTPException(
                     status_code=404, detail=i18n.t("translations.DOCUMENT_NOT_FOUND")
                 )
-            
+
             if document.uploader_id != user.id:
                 raise HTTPException(
                     status_code=403, detail=i18n.t("translations.UNAUTHORIZED")
@@ -110,16 +110,16 @@ class DocumentController:
                 successMessageKey="translations.DOCUMENT_UPDATED",
             )
 
-    def delete_document(document_id: int, user: UserModel)->BaseResponseModel:
+    def delete_document(document_id: int, user: UserModel) -> BaseResponseModel:
         RoleHelper.require_role(["lawyer", "staff", "admin"], user)
         with SessionLocal() as db:
             document = db.query(Document).filter(Document.id == document_id).first()
-            
+
             if document.uploader_id != user.id:
                 raise HTTPException(
                     status_code=403, detail=i18n.t("translations.UNAUTHORIZED")
                 )
-            
+
             if not document:
                 raise HTTPException(
                     status_code=404, detail=i18n.t("translations.DOCUMENT_NOT_FOUND")

@@ -11,8 +11,8 @@ from datetime import date, timedelta
 
 
 class AdminController:
-    
-    def get_open_closed_cases_dashboard(user: UserModel)->BaseResponseModel:
+
+    def get_open_closed_cases_dashboard(user: UserModel) -> BaseResponseModel:
         RoleHelper.require_role(["admin"], user)
         with SessionLocal() as db:
             open_cases = (
@@ -44,7 +44,7 @@ class AdminController:
                 successMessageKey="translations.SUCCESS",
             )
 
-    def get_paid_unpaid_amount_dashboard(user: UserModel)->BaseResponseModel:
+    def get_paid_unpaid_amount_dashboard(user: UserModel) -> BaseResponseModel:
         RoleHelper.require_role(["admin"], user)
         with SessionLocal() as db:
             today = date.today()
@@ -62,7 +62,7 @@ class AdminController:
                 successMessageKey="translations.SUCCESS",
             )
 
-    def get_case_status_change_dashboard(user: UserModel)->BaseResponseModel:
+    def get_case_status_change_dashboard(user: UserModel) -> BaseResponseModel:
         RoleHelper.require_role(["admin"], user)
         with SessionLocal() as db:
             thirty_days_ago = date.today() - timedelta(days=30)
@@ -78,7 +78,7 @@ class AdminController:
                 successMessageKey="translations.SUCCESS",
             )
 
-    def get_task_dashboard(user: UserModel)->BaseResponseModel:
+    def get_task_dashboard(user: UserModel) -> BaseResponseModel:
         RoleHelper.require_role(["admin"], user)
         with SessionLocal() as db:
             today = date.today()

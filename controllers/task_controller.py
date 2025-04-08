@@ -20,7 +20,13 @@ class TaskController:
             if user.role == "lawyer":
                 tasks = db.query(Task).filter(Task.created_by == user.id).all()
             elif user.role == "staff":
-                tasks = db.query(Task).filter(Task.assign_to_staff == user.id and Task.created_by == user.id).all()
+                tasks = (
+                    db.query(Task)
+                    .filter(
+                        Task.assign_to_staff == user.id and Task.created_by == user.id
+                    )
+                    .all()
+                )
             else:
                 tasks = db.query(Task).all()
 
@@ -38,13 +44,17 @@ class TaskController:
         RoleHelper.require_role(["lawyer", "staff", "admin"], user)
         with SessionLocal() as db:
             task = db.query(Task).filter(Task.id == task_id).first()
-            
+
             if not task:
                 raise HTTPException(
                     status_code=404, detail=i18n.t("translations.TASK_NOT_FOUND")
                 )
-            
-            if task.created_by != user.id and task.assign_to_staff != user.id and user.role!="admin":
+
+            if (
+                task.created_by != user.id
+                and task.assign_to_staff != user.id
+                and user.role != "admin"
+            ):
                 raise HTTPException(
                     status_code=403, detail=i18n.t("translations.UNAUTHORIZED")
                 )
@@ -115,7 +125,7 @@ class TaskController:
                 raise HTTPException(
                     status_code=404, detail=i18n.t("translations.TASK_NOT_FOUND")
                 )
-            
+
             if task.created_by != user.id and task.assign_to_staff != user.id:
                 raise HTTPException(
                     status_code=403, detail=i18n.t("translations.UNAUTHORIZED")
@@ -162,7 +172,7 @@ class TaskController:
                 raise HTTPException(
                     status_code=404, detail=i18n.t("translations.TASK_NOT_FOUND")
                 )
-                
+
             if task.created_by != user.id and task.assign_to_staff != user.id:
                 raise HTTPException(
                     status_code=403, detail=i18n.t("translations.UNAUTHORIZED")
@@ -178,14 +188,37 @@ class TaskController:
     def task_dashboard(user: UserModel) -> BaseResponseModel:
         RoleHelper.require_role(["lawyer", "staff", "admin"], user)
         with SessionLocal() as db:
-            today=date.today()
+            today = date.today()
 
-            due_today = db.query(Task).filter(Task.due_date==today,Task.status!="complete",Task.assign_to_staff==user.id or Task.created_by==user.id).count()
-            
-            overdue = db.query(Task).filter(Task.due_date < today, Task.status!="complete",Task.assign_to_staff==user.id or Task.created_by==user.id).count()
-            
-            completed = db.query(Task).filter(Task.status == "complete",Task.assign_to_staff==user.id or Task.created_by==user.id).count()
-            
+            due_today = (
+                db.query(Task)
+                .filter(
+                    Task.due_date == today,
+                    Task.status != "complete",
+                    Task.assign_to_staff == user.id or Task.created_by == user.id,
+                )
+                .count()
+            )
+
+            overdue = (
+                db.query(Task)
+                .filter(
+                    Task.due_date < today,
+                    Task.status != "complete",
+                    Task.assign_to_staff == user.id or Task.created_by == user.id,
+                )
+                .count()
+            )
+
+            completed = (
+                db.query(Task)
+                .filter(
+                    Task.status == "complete",
+                    Task.assign_to_staff == user.id or Task.created_by == user.id,
+                )
+                .count()
+            )
+
             return APIHelper.send_success_response(
                 data={
                     "due_today_task": due_today,

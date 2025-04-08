@@ -24,31 +24,37 @@ class TokenHelper:
         to_encode = data.copy()
         expire = datetime.now() + timedelta(days=30)
         to_encode.update({"exp": expire})
-        encoded_jwt = jwt.encode(
-            to_encode, JWT_SECRET, algorithm=ALGORITHM)
+        encoded_jwt = jwt.encode(to_encode, JWT_SECRET, algorithm=ALGORITHM)
         return encoded_jwt
-    
+
     def verify_token(token: str) -> UserModel:
         try:
             payload = jwt.decode(token, JWT_SECRET, algorithms=[ALGORITHM])
             username = payload.get("sub")
             user_id = payload.get("id")
-            user_role = payload.get("role")  
+            user_role = payload.get("role")
             exp = payload.get("exp")
-            
+
             if exp and datetime.now(timezone.utc).timestamp() > exp:
-                return APIHelper.send_unauthorized_error(errorMessageKey='translations.TOKEN_EXPIRED')
-          
+                return APIHelper.send_unauthorized_error(
+                    errorMessageKey="translations.TOKEN_EXPIRED"
+                )
+
             if not username or not user_id or not user_role:
-                return APIHelper.send_unauthorized_error(errorMessageKey='translations.UNAUTHORIZED')
+                return APIHelper.send_unauthorized_error(
+                    errorMessageKey="translations.UNAUTHORIZED"
+                )
         except JWTError:
-            return APIHelper.send_unauthorized_error(errorMessageKey='translations.UNAUTHORIZED')
-        
+            return APIHelper.send_unauthorized_error(
+                errorMessageKey="translations.UNAUTHORIZED"
+            )
+
         user = DBHelper.get_user_by_id(user_id)
         if user is None:
             return APIHelper.send_unauthorized_error(
-                errorMessageKey='translations.UNAUTHORIZED')
-        return UserModel(id=user.id,Username=user.username,role=user.role)
+                errorMessageKey="translations.UNAUTHORIZED"
+            )
+        return UserModel(id=user.id, Username=user.username, role=user.role)
 
     def get_current_user(token: str = Depends(oauth2_scheme)) -> UserModel:
         return TokenHelper.verify_token(token)

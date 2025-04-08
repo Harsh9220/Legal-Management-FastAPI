@@ -25,58 +25,54 @@ from routes.session import session
 from fastapi.exceptions import RequestValidationError
 import i18n
 
-#Setup Logger
+# Setup Logger
 setup_logger()
 
-#Setup i18n
-i18n.load_path.append('language/')
+# Setup i18n
+i18n.load_path.append("language/")
 i18n.set("filename_format", "{namespace}.{locale}.{format}")
 i18n.set("file_format", "json")
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-   
+
     db = SessionLocal()
     try:
         common.create_initial_admin(db)
-        yield  
+        yield
     finally:
         db.close()
 
-# Initializing app
-app = FastAPI(
-    title="Boilerplate-FastAPI",
-    version="0.0.1",
-    lifespan=lifespan
-)
 
-#Setup CORS
+# Initializing app
+app = FastAPI(title="Boilerplate-FastAPI", version="0.0.1", lifespan=lifespan)
+
+# Setup CORS
 CORSHelper.setup_cors(app)
+
 
 # Request validation error
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    if exc.errors()[0]['type'] == 'value_error':
+    if exc.errors()[0]["type"] == "value_error":
         return APIHelper.send_error_response(
-            errorMessageKey =f"{exc.errors()[0]['msg']}"
+            errorMessageKey=f"{exc.errors()[0]['msg']}"
         )
     else:
         return APIHelper.send_error_response(
-            errorMessageKey =f"{exc.errors()[0]['loc'][1]} {exc.errors()[0]['msg']}")
-        
+            errorMessageKey=f"{exc.errors()[0]['loc'][1]} {exc.errors()[0]['msg']}"
+        )
+
 
 @app.get("/")
 async def root():
     return {
         "message": "Welcome to Legal Management API",
         "version": "0.0.1",
-        "documentation": {
-            "swagger": "/docs",
-            "redoc": "/redoc"
-        },
-        "status": "active"
+        "documentation": {"swagger": "/docs", "redoc": "/redoc"},
+        "status": "active",
     }
-
 
 
 # Including the routes
