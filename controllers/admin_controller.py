@@ -50,7 +50,7 @@ class AdminController:
             today = date.today()
             unpaid_amount = (
                 db.query(func.sum(Invoice.amount))
-                .filter(Invoice.due_on_date < today)
+                .filter(Invoice.due_on_date > today)
                 .scalar()
                 or 0
             )

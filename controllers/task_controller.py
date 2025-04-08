@@ -194,8 +194,8 @@ class TaskController:
                 db.query(Task)
                 .filter(
                     Task.due_date == today,
-                    Task.status != "complete",
-                    Task.assign_to_staff == user.id or Task.created_by == user.id,
+                    Task.status != "complete", 
+                    Task.created_by == user.id,
                 )
                 .count()
             )
@@ -205,7 +205,7 @@ class TaskController:
                 .filter(
                     Task.due_date < today,
                     Task.status != "complete",
-                    Task.assign_to_staff == user.id or Task.created_by == user.id,
+                    Task.created_by == user.id,
                 )
                 .count()
             )
@@ -214,7 +214,7 @@ class TaskController:
                 db.query(Task)
                 .filter(
                     Task.status == "complete",
-                    Task.assign_to_staff == user.id or Task.created_by == user.id,
+                    Task.created_by == user.id,
                 )
                 .count()
             )
