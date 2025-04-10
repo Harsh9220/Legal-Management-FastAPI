@@ -149,6 +149,8 @@ class InvoiceController:
                 invoice.amount = update_data.amount
             if update_data.due_on_date is not None:
                 invoice.due_on_date = update_data.due_on_date
+            if update_data.status is not None:
+                invoice.status = update_data.status
 
             db.commit()
             db.refresh(invoice)

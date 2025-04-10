@@ -4,6 +4,7 @@ from dtos.user_models import UserResponse, CreateUserRequest, UpdateUserRequest
 from helper.role_helper import RoleHelper
 from helper.api_helper import APIHelper
 from helper.hashing import Hash
+from helper.validation_helper import ValidationHelper
 from models.user import User
 from config.db_config import SessionLocal
 from fastapi import HTTPException
@@ -42,7 +43,8 @@ class UserController:
                 raise HTTPException(
                     status_code=400, detail=i18n.t("translations.EMAIL_EXISTS")
                 )
-
+            ValidationHelper.is_valid_password(user_data.password)
+            
             new_user = User(
                 email=user_data.email,
                 username=user_data.username,
@@ -164,6 +166,7 @@ class UserController:
                 user.email = update_data.email
 
             if update_data.password:
+                ValidationHelper.is_valid_password(update_data.password)
                 user.hashed_password = Hash.get_hash(update_data.password)
 
             for field in ["name", "mobile", "address"]:

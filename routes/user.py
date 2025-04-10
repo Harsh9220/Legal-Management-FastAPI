@@ -20,7 +20,7 @@ def get_users_by_role(role: str, current_user: user_dependency):
     return UserController.get_users(role, current_user)
 
 
-@user.get("/users/id/{user_id}")
+@user.get("/users/{user_id}")
 def get_user_by_id(user_id: int, current_user: user_dependency):
     return UserController.get_user_by_id(user_id, current_user)
 

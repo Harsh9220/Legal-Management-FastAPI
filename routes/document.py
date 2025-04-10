@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Form, UploadFile
 from starlette import status
 from typing import Annotated
 from dtos.auth_models import UserModel
 from helper.token_helper import TokenHelper
 from controllers.document_controller import DocumentController
-from dtos.document_models import CreateDocumentRequest, UpdateDocumentRequest
+from dtos.document_models import  UpdateDocumentRequest
 
 document = APIRouter(tags=["document"])
 
@@ -21,11 +21,11 @@ async def get_document(document_id: int, current_user: user_dependency):
     return DocumentController.get_document_by_id(document_id, current_user)
 
 
-@document.post("/document", status_code=status.HTTP_201_CREATED)
+@document.post("/document",status_code=status.HTTP_201_CREATED)
 async def create_document(
-    document_data: CreateDocumentRequest, current_user: user_dependency
+    file:UploadFile,case_id:int,current_user: user_dependency
 ):
-    return DocumentController.create_document(document_data, current_user)
+    return DocumentController.create_document(case_id,file, current_user)
 
 
 @document.post("/document/{document_id}", status_code=status.HTTP_200_OK)

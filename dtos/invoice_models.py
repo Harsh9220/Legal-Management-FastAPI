@@ -14,6 +14,7 @@ class UpdateInvoiceRequest(BaseModel):
     client_id: Optional[int] = Field(None)
     amount: Optional[int] = Field(None, gt=0)
     due_on_date: Optional[date] = Field(None)
+    status : Optional[str] = Field(None, pattern="^(completed|incomplete)$")
 
 
 class CreatorResponse(BaseModel):
@@ -37,6 +38,7 @@ class InvoiceResponse(BaseModel):
     invoice_number: int
     amount: int
     due_on_date: Optional[date] = None
+    status:Optional[str]
     updated_at: datetime
     created_at: datetime
     client: ClientResponse

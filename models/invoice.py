@@ -10,6 +10,7 @@ class Invoice(Base):
     client_id=Column(Integer,ForeignKey("users.id"),nullable=False)
     amount=Column(Integer,nullable=False)
     due_on_date=Column(Date,server_default=func.current_date())
+    status=Column(String,nullable=False)
     created_by=Column(Integer,ForeignKey("users.id"),nullable=False)
     updated_at= Column(DateTime, server_default=func.now(), onupdate=func.now())
     created_at= Column(DateTime, server_default=func.now())

@@ -13,8 +13,8 @@ class Hash:
     def verify(plain_text: str, hashed_text: str):
         return hash_context.verify(plain_text, hashed_text)
 
-    def authenticate_user(username: str, password: str) -> UserModel:
-        user = DBHelper.get_user_by_username(username)
+    def authenticate_user(email: str, password: str) -> UserModel:
+        user = DBHelper.get_user_by_email(email)
         if not user:
             return APIHelper.send_unauthorized_error(
                 errorMessageKey="translations.INVALID_CREDENTIAL"

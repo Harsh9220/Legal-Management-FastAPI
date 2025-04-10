@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog  
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+    xsi:schemaLocation="
+       http://www.liquibase.org/xml/ns/dbchangelog
+       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+  <changeSet id="006_add_status_to_invoices" author="harsh">
+    <addColumn tableName="invoices">
+      <column name="status" type="VARCHAR(20)" defaultValue="incomplete">
+        <constraints 
+            nullable="false"
+            checkConstraint="status IN ('completed','incomplete')"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
+</databaseChangeLog>

@@ -30,7 +30,7 @@ class TokenHelper:
     def verify_token(token: str) -> UserModel:
         try:
             payload = jwt.decode(token, JWT_SECRET, algorithms=[ALGORITHM])
-            username = payload.get("sub")
+            email = payload.get("sub")
             user_id = payload.get("id")
             user_role = payload.get("role")
             exp = payload.get("exp")
@@ -40,7 +40,7 @@ class TokenHelper:
                     errorMessageKey="translations.TOKEN_EXPIRED"
                 )
 
-            if not username or not user_id or not user_role:
+            if not email or not user_id or not user_role:
                 return APIHelper.send_unauthorized_error(
                     errorMessageKey="translations.UNAUTHORIZED"
                 )
@@ -54,7 +54,7 @@ class TokenHelper:
             return APIHelper.send_unauthorized_error(
                 errorMessageKey="translations.UNAUTHORIZED"
             )
-        return UserModel(id=user.id, Username=user.username, role=user.role)
+        return UserModel(id=user.id, email=user.email, role=user.role)
 
     def get_current_user(token: str = Depends(oauth2_scheme)) -> UserModel:
         return TokenHelper.verify_token(token)

@@ -11,3 +11,4 @@ class Document(Base):
     case_id=Column(Integer,ForeignKey("cases.id"),nullable=False)
     updated_at=Column(DateTime, server_default=func.now(),onupdate=func.now())
     created_at= Column(DateTime, server_default=func.now())
+    document_path= Column(String(500), nullable=False)

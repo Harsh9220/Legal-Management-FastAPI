@@ -25,5 +25,7 @@ class ValidationHelper:
     def is_valid_password(v):
         PASSWORD_REGEX = r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
         if not re.fullmatch(PASSWORD_REGEX, v):
-            raise ValueError(i18n.t(key="translations.INVALID_PASSWORD"))
+            raise APIHelper.send_error_response(
+                errorMessageKey="translations.INVALID_PASSWORD"
+            ) 
         return v
