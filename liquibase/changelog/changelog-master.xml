@@ -15,5 +15,6 @@
     <include file="008_merge_clients_to_users.xml" relativeToChangelogFile="true"/>
     <include file="009_add_status_to_invoice.xml" relativeToChangelogFile="true"/>
     <include file="010_add_document_path_to_documents.xml" relativeToChangelogFile="true"/>
+    <include file="011_add_created_by_to_cases.xml" relativeToChangelogFile="true"/>
     
 </databaseChangeLog>

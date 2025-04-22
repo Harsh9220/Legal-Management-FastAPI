@@ -1,33 +1,21 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, Enum, func 
-from sqlalchemy.orm import relationship
-from config.db_config import Base
-from models.case import Case
-from models.task import Task
-from models.document import Document
-from models.invoice import Invoice
+# models/user.py
+from sqlalchemy import Table, Column, Integer, String, DateTime, Boolean, Enum, func
+from config.db_config import meta
 
-class User(Base):
-    __tablename__='users'
-
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String(100), unique=True, nullable=False)
-    name= Column(String(255), nullable=False)
-    email = Column(String(100), unique=True, nullable=False)
-    hashed_password = Column(String(255), nullable=False)
-    mobile = Column(String(20))
-    address = Column(String(255))
-    role = Column(Enum("lawyer", "staff", "admin", "client", name="user_roles"), nullable=False)  
-    is_blocked = Column(Boolean, default=False)
-    is_deleted = Column(Boolean, default=False) 
-
-    created_at = Column(DateTime, server_default=func.now())
-    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
-    
-    lawyer_cases=relationship("Case",backref="lawyer",cascade="save-update,delete",foreign_keys="[Case.lawyer_id]")
-    client_cases=relationship("Case",backref="client",cascade="save-update,delete",foreign_keys="[Case.client_id]")
-    assign_tasks=relationship("Task", backref="assign_staff", cascade="save-update,delete", foreign_keys="[Task.assign_to_staff]")
-    created_task=relationship("Task", backref="creator", cascade="save-update,delete", foreign_keys="[Task.created_by]")
-    client_invoice=relationship("Invoice", backref="client", cascade="save-update,delete", foreign_keys="[Invoice.client_id]")
-    invoices=relationship("Invoice", backref="creator", cascade="save-update,delete", foreign_keys="[Invoice.created_by]")
-    documents=relationship("Document",backref="uploader",cascade="save-update,delete", foreign_keys="[Document.uploader_id]")
-    assigned_cases = relationship("Case", secondary="case_staff", back_populates="staff_members")
+users_table = Table(
+    "users",
+    meta,
+    Column("id", Integer, primary_key=True, index=True),
+    Column("username", String(100), unique=True, nullable=False),
+    Column("name", String(255), nullable=False),
+    Column("email", String(100), unique=True, nullable=False),
+    Column("hashed_password", String(255), nullable=False),
+    Column("mobile", String(20)),
+    Column("address", String(255)),
+    Column("role", Enum("lawyer", "staff", "admin", "client", name="user_roles"), nullable=False),
+    Column("is_blocked", Boolean, default=False),
+    Column("is_deleted", Boolean, default=False),
+    Column("created_at", DateTime, server_default=func.now()),
+    Column("updated_at", DateTime, server_default=func.now(), onupdate=func.now()),
+    extend_existing=True
+)

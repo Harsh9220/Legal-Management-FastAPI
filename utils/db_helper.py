@@ -1,16 +1,28 @@
-from models.user import User
-from config.db_config import SessionLocal
-
+from sqlalchemy import select, Executable
+from models.user import users_table
+from config.db_config import engine
+from sqlalchemy.exc import SQLAlchemyError
 
 class DBHelper:
+        
+    def execute_query(query:Executable):
+        with engine.connect() as db:
+            try:
+                result = db.execute(query)
+                db.commit()
+                return result
+            except SQLAlchemyError:
+                db.rollback()
+                raise
+    
     def get_user_by_email(email: str):
-        with SessionLocal() as db:
-            return db.query(User).filter(User.email == email).first()
+        user = DBHelper.execute_query(users_table.select().where(users_table.c.email==email)).fetchone()
+        return user
 
     def get_user_by_id(id: int):
-        with SessionLocal() as db:
-            return db.query(User).filter(User.id == id).first()
+        user = DBHelper.execute_query(users_table.select().where(users_table.c.id==id)).fetchone()
+        return user
 
     def get_user_by_username(username: str):
-        with SessionLocal() as db:
-            return db.query(User).filter(User.username == username).first()
+        user = DBHelper.execute_query(users_table.select().where(users_table.c.username==username)).fetchone()
+        return user

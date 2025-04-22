@@ -1,17 +1,19 @@
-from sqlalchemy import Column, Integer, String, DateTime, func, Date, Enum, ForeignKey
-from config.db_config import Base
+# models/tasks.py
+from sqlalchemy import Table, Column, Integer, String, Date, DateTime, Enum, ForeignKey, func
+from config.db_config import meta
 
-
-class Task(Base):
-    __tablename__ = "tasks"
-
-    id = Column(Integer, primary_key=True, index=True)
-    task_name = Column(String(255), nullable=False)
-    due_date = Column(Date, server_default=func.current_date())
-    priority = Column(Enum("high", "medium", "low", name="priority"), nullable=False)
-    assign_to_staff = Column(Integer, ForeignKey("users.id"))
-    status = Column(Enum("complete", "need review", "incomplete", name="status"), nullable=False, default="incomplete")
-    case_id = Column(Integer, ForeignKey("cases.id"), nullable=False)
-    created_by = Column(Integer, ForeignKey("users.id"), nullable=False)
-    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
-    created_at = Column(DateTime, server_default=func.now())
+tasks_table = Table(
+    "tasks",
+    meta,
+    Column("id", Integer, primary_key=True, index=True),
+    Column("task_name", String(255), nullable=False),
+    Column("due_date", Date, server_default=func.current_date()),
+    Column("priority", Enum("high", "medium", "low", name="priority"), nullable=False),
+    Column("assign_to_staff", Integer, ForeignKey("users.id")),
+    Column("status", Enum("complete", "need review", "incomplete", name="status"), nullable=False, default="incomplete"),
+    Column("case_id", Integer, ForeignKey("cases.id"), nullable=False),
+    Column("created_by", Integer, ForeignKey("users.id"), nullable=False),
+    Column("updated_at", DateTime, server_default=func.now(), onupdate=func.now()),
+    Column("created_at", DateTime, server_default=func.now()),
+    extend_existing=True
+)

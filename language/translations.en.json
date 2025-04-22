@@ -5,6 +5,7 @@
     "UNAUTHORIZED": "You are unauthorized",
     "LOGIN_SUCCESS":"You have logged in successfully",
     "INVALID_CREDENTIAL":"Invalid credentials",
+    "INVALID_ROLE":"Invalid role specified",
     "TOKEN_EXPIRED":"Token is expired",
     "PERMISSION_DENIED":"Permission is denied",
     "INVALID_EMAIL":"Email is invalid",

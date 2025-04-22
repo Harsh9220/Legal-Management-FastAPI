@@ -10,6 +10,7 @@ class CreateCaseRequest(BaseModel):
     case_stage: str = Field(pattern="^(appeal|first degree)$")
     city_name: Optional[str] = Field(min_length=3, max_length=255)
     client_id: int
+    lawyer_id: Optional[int] = None
     remarks: Optional[str]
     staff_ids: Optional[List[int]] = None
 
@@ -20,33 +21,18 @@ class UpdateCaseRequest(BaseModel):
     case_stage: Optional[str] = Field(None, pattern="^(appeal|first degree)$")
     city_name: Optional[str] = Field(None, min_length=3, max_length=255)
     client_id: Optional[int] = Field(None)
+    lawyer_id: Optional[int] = None
     remarks: Optional[str] = Field(None)
     case_status: Optional[str] = Field(None, pattern="^(open|closed)$")
     staff_ids: Optional[List[int]] = None
 
 
-class ClientResponse(BaseModel):
+class UserResponse(BaseModel):
     id: int
     name: str
 
     class Config:
-        from_attributes = True
-
-
-class LawyerResponse(BaseModel):
-    id: int
-    name: str
-
-    class Config:
-        from_attributes = True
-
-
-class StaffResponse(BaseModel):
-    id: int
-    name: str
-
-    class Config:
-        from_attributes = True
+        from_attributes = True 
 
 
 class CaseResponse(BaseModel):
@@ -60,9 +46,10 @@ class CaseResponse(BaseModel):
     city_name: Optional[str]
     remarks: Optional[str]
     is_deleted: bool
-    lawyer: LawyerResponse
-    client: ClientResponse
-    staff_members: Optional[List[StaffResponse]] = []
+    lawyer: UserResponse
+    client: UserResponse
+    creator: Optional[UserResponse]
+    staff_members: Optional[List[UserResponse]] = []
 
     class Config:
         from_attributes = True

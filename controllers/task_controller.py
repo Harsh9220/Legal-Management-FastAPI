@@ -3,227 +3,278 @@ from dtos.base_response_model import BaseResponseModel
 from dtos.task_models import TaskResponse, CreateTaskRequest, UpdateTaskRequest
 from helper.role_helper import RoleHelper
 from helper.api_helper import APIHelper
-from models.task import Task
-from models.case import Case
-from models.user import User
+from models.task import tasks_table
+from models.case import cases_table
+from models.user import users_table
+from utils.db_helper import DBHelper
+from config.constants import Constants
 from datetime import date
-from config.db_config import SessionLocal
-from fastapi import HTTPException
-import i18n
-
+from sqlalchemy import func, select
 
 class TaskController:
-
+    
     def get_all_tasks(user: UserModel) -> BaseResponseModel:
-        RoleHelper.require_role(["lawyer", "staff", "admin"], user)
-        with SessionLocal() as db:
-            if user.role == "lawyer":
-                tasks = db.query(Task).filter(Task.created_by == user.id).all()
-            elif user.role == "staff":
-                tasks = (
-                    db.query(Task)
-                    .filter(
-                        Task.assign_to_staff == user.id and Task.created_by == user.id
-                    )
-                    .all()
-                )
-            else:
-                tasks = db.query(Task).all()
-
-            if not tasks:
-                raise HTTPException(
-                    status_code=404, detail=i18n.t("translations.TASK_NOT_FOUND")
-                )
-
-            return APIHelper.send_success_response(
-                data=[TaskResponse.model_validate(task).model_dump() for task in tasks],
-                successMessageKey="translations.SUCCESS",
+        RoleHelper.require_role(
+            [Constants.ADMIN, Constants.LAWYER, Constants.STAFF], user
+        )
+        if user.role == Constants.LAWYER:
+            query = (
+                tasks_table
+                .select()
+                .where(tasks_table.c.created_by == user.id)
             )
+        elif user.role == Constants.STAFF:
+            query = (
+                tasks_table
+                .select()
+                .where(
+                    (tasks_table.c.assign_to_staff == user.id) &
+                    (tasks_table.c.created_by == user.id)
+                )
+            )
+        else:  
+            query = tasks_table.select()
+
+        tasks = DBHelper.execute_query(query).mappings().fetchall()
+        
+        if not tasks:
+            return APIHelper.send_error_response(
+                errorMessageKey="translations.TASK_NOT_FOUND"
+            )
+
+        return APIHelper.send_success_response(
+            data=[
+            TaskResponse.model_validate(dict(task)).model_dump()
+            for task in tasks
+        ],
+            successMessageKey="translations.SUCCESS",
+        )
 
     def get_task_by_id(task_id: int, user: UserModel) -> BaseResponseModel:
-        RoleHelper.require_role(["lawyer", "staff", "admin"], user)
-        with SessionLocal() as db:
-            task = db.query(Task).filter(Task.id == task_id).first()
+        RoleHelper.require_role(
+            [Constants.ADMIN, Constants.LAWYER, Constants.STAFF], user
+        )
 
-            if not task:
-                raise HTTPException(
-                    status_code=404, detail=i18n.t("translations.TASK_NOT_FOUND")
-                )
-
-            if (
-                task.created_by != user.id
-                and task.assign_to_staff != user.id
-                and user.role != "admin"
-            ):
-                raise HTTPException(
-                    status_code=403, detail=i18n.t("translations.UNAUTHORIZED")
-                )
-
-            return APIHelper.send_success_response(
-                data=TaskResponse.model_validate(task).model_dump(),
-                successMessageKey="translations.SUCCESS",
+        task = DBHelper.execute_query(
+            tasks_table
+            .select()
+            .where(tasks_table.c.id == task_id)
+            .limit(1)
+        ).mappings().fetchone()
+        
+        if not task:
+            return APIHelper.send_error_response(
+                errorMessageKey="translations.TASK_NOT_FOUND"
             )
+        
+        task_data = dict(task)
+        
+        if user.role != Constants.ADMIN and task_data['created_by'] != user.id and task_data['assign_to_staff'] != user.id:
+            return APIHelper.send_unauthorized_error(
+                errorMessageKey="translations.UNAUTHORIZED"
+            )
+
+        return APIHelper.send_success_response(
+            data=TaskResponse.model_validate(dict(task)).model_dump(),
+            successMessageKey="translations.SUCCESS",
+        )
 
     def create_task(task_data: CreateTaskRequest, user: UserModel) -> BaseResponseModel:
-        RoleHelper.require_role(["lawyer", "staff", "admin"], user)
-        with SessionLocal() as db:
+        RoleHelper.require_role(
+            [Constants.ADMIN, Constants.LAWYER, Constants.STAFF], user
+        )
 
-            case = (
-                db.query(Case)
-                .filter(Case.id == task_data.case_id, Case.is_deleted == False)
-                .first()
+        case = DBHelper.execute_query(
+            cases_table
+            .select()
+            .where(
+                cases_table.c.id == task_data.case_id,
+                cases_table.c.is_deleted == False
+            )
+            .limit(1)
+        ).fetchone()
+        
+        if not case:
+            return APIHelper.send_error_response(
+                errorMessageKey="translations.CASE_NOT_FOUND"
             )
 
-            if not case:
-                raise HTTPException(
-                    status_code=404, detail=i18n.t("translations.CLIENT_NOT_FOUND")
+        if task_data.assign_to_staff is not None:
+            staff = DBHelper.execute_query(
+                users_table
+                .select()
+                .where(
+                    users_table.c.id == task_data.assign_to_staff,
+                    users_table.c.role == Constants.STAFF,
+                    users_table.c.is_deleted == False
+                )
+            ).fetchone()
+            
+            if not staff:
+                return APIHelper.send_error_response(
+                    errorMessageKey="translations.STAFF_NOT_FOUND"
                 )
 
-            if task_data.assign_to_staff is not None:
-                staff = (
-                    db.query(User)
-                    .filter(
-                        User.id == task_data.assign_to_staff,
-                        User.role == "staff",
-                        User.is_deleted == False,
-                    )
-                    .first()
-                )
-                if not staff:
-                    raise HTTPException(
-                        status_code=404, detail=i18n.t("translations.STAFF_NOT_FOUND")
-                    )
+        due = task_data.due_date or date.today()
 
-            due_date = task_data.due_date or date.today()
-
-            new_task = Task(
+        insert_res = DBHelper.execute_query(
+            tasks_table.insert().values(
                 task_name=task_data.task_name,
-                due_date=due_date,
+                due_date=due,
                 priority=task_data.priority,
                 assign_to_staff=task_data.assign_to_staff,
                 case_id=task_data.case_id,
-                created_by=user.id,
+                created_by=user.id
+            )
+        )
+        
+        if hasattr(insert_res, 'inserted_primary_key') and insert_res.inserted_primary_key:
+            task_id = insert_res.inserted_primary_key[0]
+        else:
+            task_id = insert_res.lastrowid
+
+        new_task = DBHelper.execute_query(
+            tasks_table
+            .select()
+            .where(tasks_table.c.id == task_id)
+            .limit(1)
+        ).mappings().fetchone()
+        
+        return APIHelper.send_success_response(
+            data=TaskResponse.model_validate(dict(new_task)).model_dump(),
+            successMessageKey="translations.TASK_CREATED"
+        )
+
+
+    def update_task(task_id: int, update_data: UpdateTaskRequest, user: UserModel) -> BaseResponseModel:
+        RoleHelper.require_role(
+            [Constants.ADMIN, Constants.LAWYER, Constants.STAFF], user
+        )
+
+        task = DBHelper.execute_query(
+            tasks_table
+            .select()
+            .where(tasks_table.c.id == task_id)
+            .limit(1)
+        ).mappings().fetchone()
+        
+        if not task:
+            return APIHelper.send_error_response(
+                errorMessageKey="translations.TASK_NOT_FOUND"
+            )
+            
+        task_data = dict(task)
+        if task_data['created_by'] != user.id and task_data['assign_to_staff'] != user.id and user.role != Constants.ADMIN:
+            return APIHelper.send_unauthorized_error(
+                errorMessageKey="translations.UNAUTHORIZED"
             )
 
-            db.add(new_task)
-            db.commit()
-            db.refresh(new_task)
-
-            return APIHelper.send_success_response(
-                data=TaskResponse.model_validate(new_task).model_dump(),
-                successMessageKey="translations.TASK_CREATED",
+        update_value = {}
+        if update_data.assign_to_staff is not None:
+            staff = DBHelper.execute_query(
+                users_table
+                .select()
+                .where(
+                    users_table.c.id == update_data.assign_to_staff,
+                    users_table.c.role == Constants.STAFF,
+                    users_table.c.is_deleted == False
+                )
+            ).fetchone()
+            
+            if not staff:
+                return APIHelper.send_error_response(
+                    errorMessageKey="translations.STAFF_NOT_FOUND"
+                )
+            update_value['assign_to_staff'] = update_data.assign_to_staff
+            
+        for field in ['task_name', 'due_date', 'priority', 'status']:
+            val = getattr(update_data, field, None)
+            if val is not None:
+                update_value[field] = val
+                
+        if update_value:
+            DBHelper.execute_query(
+                tasks_table
+                .update()
+                .where(tasks_table.c.id == task_id)
+                .values(**update_value)
             )
-
-    def update_task(
-        task_id: int, update_data: UpdateTaskRequest, user: UserModel
-    ) -> BaseResponseModel:
-        RoleHelper.require_role(["lawyer", "staff", "admin"], user)
-        with SessionLocal() as db:
-            task = db.query(Task).filter(Task.id == task_id).first()
-
-            if not task:
-                raise HTTPException(
-                    status_code=404, detail=i18n.t("translations.TASK_NOT_FOUND")
-                )
-
-            if task.created_by != user.id and task.assign_to_staff != user.id:
-                raise HTTPException(
-                    status_code=403, detail=i18n.t("translations.UNAUTHORIZED")
-                )
-
-            if update_data.task_name is not None:
-                task.task_name = update_data.task_name
-            if update_data.due_date is not None:
-                task.due_date = update_data.due_date
-            if update_data.priority is not None:
-                task.priority = update_data.priority
-            if update_data.assign_to_staff is not None:
-                staff = (
-                    db.query(User)
-                    .filter(
-                        User.id == update_data.assign_to_staff,
-                        User.role == "staff",
-                        User.is_deleted == False,
-                    )
-                    .first()
-                )
-                if not staff:
-                    raise HTTPException(
-                        status_code=404, detail=i18n.t("translations.SAFF_NOT FOUND")
-                    )
-                task.assign_to_staff = update_data.assign_to_staff
-            if update_data.status is not None:
-                task.status = update_data.status
-
-            db.commit()
-            db.refresh(task)
-
-            return APIHelper.send_success_response(
-                data={"task_id": task.id},
-                successMessageKey="translations.TASK_UPDATED",
-            )
+            
+        return APIHelper.send_success_response(
+            data={"task_id": task_id},
+            successMessageKey="translations.TASK_UPDATED"
+        )
 
     def delete_task(task_id: int, user: UserModel) -> BaseResponseModel:
-        RoleHelper.require_role(["lawyer", "staff", "admin"], user)
-        with SessionLocal() as db:
-            task = db.query(Task).filter(Task.id == task_id).first()
-
-            if not task:
-                raise HTTPException(
-                    status_code=404, detail=i18n.t("translations.TASK_NOT_FOUND")
-                )
-
-            if task.created_by != user.id and task.assign_to_staff != user.id:
-                raise HTTPException(
-                    status_code=403, detail=i18n.t("translations.UNAUTHORIZED")
-                )
-
-            db.delete(task)
-            db.commit()
-
-            return APIHelper.send_success_response(
-                successMessageKey="translations.TASK_DELETED"
+        RoleHelper.require_role(
+            [Constants.ADMIN, Constants.LAWYER, Constants.STAFF], user
+        )
+        task = DBHelper.execute_query(
+            tasks_table
+            .select()
+            .where(tasks_table.c.id == task_id)
+            .limit(1)
+        ).mappings().fetchone()
+        
+        if not task:
+            return APIHelper.send_error_response(
+                errorMessageKey="translations.TASK_NOT_FOUND"
             )
+        task_data = dict(task)
+        
+        if task_data['created_by'] != user.id and task_data['assign_to_staff'] != user.id and user.role != Constants.ADMIN :
+            return APIHelper.send_unauthorized_error(
+                errorMessageKey="translations.UNAUTHORIZED"
+            )
+            
+        DBHelper.execute_query(
+            tasks_table.delete().where(tasks_table.c.id == task_id)
+        )
+        
+        return APIHelper.send_success_response(
+            successMessageKey="translations.TASK_DELETED"
+        )
 
     def task_dashboard(user: UserModel) -> BaseResponseModel:
-        RoleHelper.require_role(["lawyer", "staff", "admin"], user)
-        with SessionLocal() as db:
-            today = date.today()
-
-            due_today = (
-                db.query(Task)
-                .filter(
-                    Task.due_date == today,
-                    Task.status != "complete", 
-                    Task.created_by == user.id,
-                )
-                .count()
+        RoleHelper.require_role(
+            [Constants.ADMIN, Constants.LAWYER, Constants.STAFF], user
+        )
+        today = date.today()
+        
+        due_today = DBHelper.execute_query(
+            select(func.count())
+            .select_from(tasks_table)
+            .where(
+                tasks_table.c.due_date == today,
+                tasks_table.c.status != "complete",
+                tasks_table.c.created_by == user.id
             )
-
-            overdue = (
-                db.query(Task)
-                .filter(
-                    Task.due_date < today,
-                    Task.status != "complete",
-                    Task.created_by == user.id,
-                )
-                .count()
+        ).scalar()
+        
+        overdue = DBHelper.execute_query(
+            select(func.count())
+            .select_from(tasks_table)
+            .where(
+                tasks_table.c.due_date < today,
+                tasks_table.c.status != "complete",
+                tasks_table.c.created_by == user.id
             )
+        ).scalar()
 
-            completed = (
-                db.query(Task)
-                .filter(
-                    Task.status == "complete",
-                    Task.created_by == user.id,
-                )
-                .count()
+        completed = DBHelper.execute_query(
+            select(func.count())
+            .select_from(tasks_table)
+            .where(
+                tasks_table.c.status == "complete",
+                tasks_table.c.created_by == user.id
             )
+        ).scalar()
 
-            return APIHelper.send_success_response(
-                data={
-                    "due_today_task": due_today,
-                    "overdue_task": overdue,
-                    "completed_task": completed,
-                },
-                successMessageKey="translations.SUCCESS",
-            )
+        return APIHelper.send_success_response(
+            data={
+                "due_today_task": due_today,
+                "overdue_task": overdue,
+                "completed_task": completed,
+            },
+            successMessageKey="translations.SUCCESS",
+        )

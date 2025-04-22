@@ -1,16 +1,18 @@
-from sqlalchemy import Column, Integer, String, DateTime, func, Date,Enum, ForeignKey
-from sqlalchemy.orm import relationship
-from config.db_config import Base
+# models/invoices.py
+from sqlalchemy import Table, Column, Integer, String, Date, DateTime, ForeignKey, func
+from config.db_config import meta
 
-class Invoice(Base):
-    __tablename__='invoices'
-    
-    id= Column(Integer, primary_key=True, index=True)
-    invoice_number= Column(Integer,nullable=False,unique=True)
-    client_id=Column(Integer,ForeignKey("users.id"),nullable=False)
-    amount=Column(Integer,nullable=False)
-    due_on_date=Column(Date,server_default=func.current_date())
-    status=Column(String,nullable=False)
-    created_by=Column(Integer,ForeignKey("users.id"),nullable=False)
-    updated_at= Column(DateTime, server_default=func.now(), onupdate=func.now())
-    created_at= Column(DateTime, server_default=func.now())
+invoices_table = Table(
+    "invoices",
+    meta,
+    Column("id", Integer, primary_key=True, index=True),
+    Column("invoice_number", Integer, nullable=False, unique=True),
+    Column("client_id", Integer, ForeignKey("users.id"), nullable=False),
+    Column("amount", Integer, nullable=False),
+    Column("due_on_date", Date, server_default=func.current_date()),
+    Column("status", String, nullable=False),
+    Column("created_by", Integer, ForeignKey("users.id"), nullable=False),
+    Column("created_at", DateTime, server_default=func.now()),
+    Column("updated_at", DateTime, server_default=func.now(), onupdate=func.now()),
+    extend_existing=True
+)

@@ -1,14 +1,15 @@
-from sqlalchemy import Column, Integer, String, DateTime, func, Date, Enum, ForeignKey
-from sqlalchemy.orm import relationship
-from config.db_config import Base
+# models/sessions.py
+from sqlalchemy import Table, Column, Integer, String, Date, DateTime, ForeignKey, func
+from config.db_config import meta
 
-
-class Session(Base):
-    __tablename__ = "sessions"
-
-    id = Column(Integer, primary_key=True, index=True)
-    case_id = Column(Integer, ForeignKey("cases.id"))
-    result = Column(String(100), nullable=False)
-    session_date = Column(Date, server_default=func.current_date())
-    court_type = Column(String(100), nullable=False)
-    created_at = Column(DateTime, server_default=func.now())
+sessions_table = Table(
+    "sessions",
+    meta,
+    Column("id", Integer, primary_key=True, index=True),
+    Column("case_id", Integer, ForeignKey("cases.id")),
+    Column("result", String(100), nullable=False),
+    Column("session_date", Date, server_default=func.current_date()),
+    Column("court_type", String(100), nullable=False),
+    Column("created_at", DateTime, server_default=func.now()),
+    extend_existing=True
+)
